@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text.Json;
-using System.Text;
+
+#pragma warning disable SYSLIB0011 // TODO: Remove this pragma and fix the serializer
 
 #pragma warning disable SYSLIB0011 // TODO: Remove this pragma and fix the serializer
 
@@ -10,27 +10,27 @@ namespace QuickLibrary
 {
 	public static class SerializeMan
 	{
-        public static byte[] ObjectToByteArray<T>(T obj)
+        public static byte[] ObjectToByteArray(Object obj)
         {
             if (obj == null)
                 return null;
 
-            JsonSerializerOptions options = new JsonSerializerOptions
-            {
-                WriteIndented = true, // Optional: Set this to true if you want indented JSON
-            };
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, obj);
 
-            string jsonString = JsonSerializer.Serialize(obj, options);
-            return Encoding.UTF8.GetBytes(jsonString);
+            return ms.ToArray();
         }
 
-        public static T ByteArrayToObject<T>(byte[] arrBytes)
+        public static Object ByteArrayToObject(byte[] arrBytes)
         {
-            if (arrBytes == null)
-                return default;
+            MemoryStream memStream = new MemoryStream();
+            BinaryFormatter binForm = new BinaryFormatter();
+            memStream.Write(arrBytes, 0, arrBytes.Length);
+            memStream.Seek(0, SeekOrigin.Begin);
+            Object obj = (Object)binForm.Deserialize(memStream);
 
-            string jsonString = Encoding.UTF8.GetString(arrBytes);
-            return JsonSerializer.Deserialize<T>(jsonString);
+            return obj;
         }
     }
 }
