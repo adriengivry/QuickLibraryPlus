@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 #pragma warning disable SYSLIB0011 // TODO: Remove this pragma and fix the serializer
 
-namespace QuickLibrary
+namespace QuickLibraryPlus
 {
 	public static class SerializeMan
 	{
